@@ -1,0 +1,21 @@
+# Runs every test against the real e-Laws and Justice Laws sites once a month (and on demand from the Actions tab).
+# A failure here usually means a law changed or a site changed its layout, not that someone broke the code.
+name: live tests
+on:
+  schedule:
+    - cron: "17 11 1 * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - run: python test_law.py --fresh
+      - run: python test_mcp.py
